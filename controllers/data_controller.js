@@ -9,7 +9,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 export const get_data = async (req, res) => {
   const { data, error } = await supabase
-    .from("test")
+    .from(req.body.table)
     .select("")
     .eq("id", req.body.id);
   if (error) {
@@ -23,7 +23,7 @@ export const get_data = async (req, res) => {
 };
 
 export const create_data = async (req, res) => {
-  const { error } = await supabase.from("test").insert(req.body);
+  const { error } = await supabase.from(req.body.table).insert(req.body);
   if (error) {
     console.log("in error");
     console.log(error);
@@ -34,7 +34,7 @@ export const create_data = async (req, res) => {
 
 export const update_data = async (req, res) => {
   const { error } = await supabase
-    .from("test")
+    .from(req.body.table)
     .update(req.body)
     .eq("id", req.body.id);
   if (error) {
@@ -46,7 +46,10 @@ export const update_data = async (req, res) => {
 };
 
 export const remove_data = async (req, res) => {
-  const { error } = await supabase.from("test").delete().eq("id", req.body.id);
+  const { error } = await supabase
+    .from(req.body.table)
+    .delete()
+    .eq("id", req.body.id);
   if (error) {
     console.log("in error");
     console.log(error);
