@@ -1,8 +1,9 @@
 // index.js
-const express = require("express");
-const cors = require("cors");
-const dotenv = require("dotenv");
-const { createClient } = require("@supabase/supabase-js");
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import { createClient } from "@supabase/supabase-js";
+import routes from "./routes/index.js";
 
 // Load environment variables
 dotenv.config();
@@ -24,7 +25,10 @@ app.get("/", (req, res) => {
   res.send("Hello from Express and Supabase!");
 });
 
+app.use("/", routes);
+
 // Start the server
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
+  console.log(`server is running on http://localhost:${port}`);
 });
