@@ -53,3 +53,8 @@ export const timed_user = async (req, res) => {
   }, 600000 /* 10 min */);
   console.log("out timed_user");
 };
+
+export const open_door = async (req, res) => {
+  console.log("in open_door");
+  //write esp code
+};
