@@ -6,3 +6,5 @@ const router = express.Router();
 
 router.use("/data", data_routes);
 router.use("/app", app_routes);
+
+export default router;

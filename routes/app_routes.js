@@ -6,7 +6,7 @@ import {
   remove_user_auth,
   timed_user,
   open_door,
-} from "../controllers/app_controllers";
+} from "../controllers/app_controllers.js";
 
 router.post("/add_new_user", (req, res) => {
   console.log("add_user");

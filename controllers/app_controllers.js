@@ -3,7 +3,7 @@ import {
   create_data,
   update_data,
   remove_data,
-} from "./data_controller";
+} from "./data_controller.js";
 
 const generateNumericPin = (length = 6) => {
   const max = Math.pow(10, length) - 1;
