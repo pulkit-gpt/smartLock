@@ -2,7 +2,7 @@
 import { createClient } from "@supabase/supabase-js";
 import dotenv from "dotenv";
 dotenv.config();
-import { testSchema } from "../schema/schema.js";
+import { testSchema, authSchema, logSchema } from "../schema/schema.js";
 import Ajv from "ajv";
 
 const supabaseUrl = process.env.SUPABASE_URL;
@@ -60,9 +60,19 @@ export const remove_data = async (req, res) => {
   }
   return res.status(200).json("Data removed successfully");
 };
-export const validate_data = (req) => {
+
+export const validate_data = (req, schemaNumber) => {
   const ajv = new Ajv();
-  const validate = ajv.compile(testSchema);
+  const schema = (opt) => {
+    if (opt == 1) {
+      return authSchema;
+    } else if (opt == 2) {
+      return logSchema;
+    } else {
+      return testSchema;
+    }
+  };
+  const validate = ajv.compile(schema(schemaNumber));
 
   const requestBody = req;
   console.log("requestBody");

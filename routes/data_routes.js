@@ -17,7 +17,8 @@ router.get("/get_data", (req, res) => {
 router.post("/create_data", (req, res) => {
   console.log("create_data");
   console.log(req.body);
-  var data = validate_data(req.body, res);
+
+  var data = validate_data(req.body, req.body.schema, res);
 
   res = create_data(data.data, req.body.table, res);
 });
