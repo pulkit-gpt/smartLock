@@ -8,7 +8,7 @@ import {
   validate_data,
 } from "../controllers/data_controller.js";
 
-router.get("/get_data", (req, res) => {
+router.post("/get_data", (req, res) => {
   console.log("get_data");
   console.log(req.body);
   res = get_data(req, res);
