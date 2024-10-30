@@ -4,6 +4,9 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { createClient } from "@supabase/supabase-js";
 import routes from "./routes/index.js";
+//import MQTT Client
+import { Client } from "mqtt";
+import { client } from "./controllers/mqtt_controller.js";
 
 // Load environment variables
 dotenv.config();
