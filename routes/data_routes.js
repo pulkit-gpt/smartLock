@@ -17,10 +17,7 @@ router.post("/get_data", (req, res) => {
 router.post("/create_data", (req, res) => {
   console.log("create_data");
   console.log(req.body);
-
-  var data = validate_data(req.body, req.body.schema, res);
-
-  res = create_data(data.data, req.body.table, res);
+  res = create_data(req.body, req.body.table, res);
 });
 
 router.post("/update_data", (req, res) => {

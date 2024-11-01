@@ -1,7 +1,7 @@
 export const testSchema = {
   type: "object",
   properties: {
-    id: { type: "integer" },
+    id: { type: "string" },
     name: { type: "string" },
   },
   required: ["id", "name"],
@@ -24,7 +24,6 @@ export const logSchema = {
   properties: {
     uuid: { type: "string" },
     accessed_by: { type: "string" },
-    accessed_at: { type: "string" },
   },
-  required: ["uuid", "accessed_by", "accessed_at"],
+  required: ["uuid", "accessed_by"],
 };

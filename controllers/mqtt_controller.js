@@ -1,4 +1,5 @@
 import mqtt from "mqtt";
+import { credSend, logging, open_door } from "./esp_controller.js";
 
 const url = "mqtt://mqtt.eclipseprojects.io";
 // Initialize MQTT client
@@ -14,10 +15,10 @@ export const client = mqtt.connect(url, options);
 client.on("connect", function () {
   console.log("Connected");
   // Subscribe to a topic
-  client.subscribe("pulkit\\test", function (err) {
+  client.subscribe("smartLock/server", function (err) {
     if (!err) {
       // Publish a message to a topic
-      client.publish("pulkit\\test", '{"data":123, "test": "help"}');
+      console.log("Subscribed to smartLock/server");
     }
   });
 });
@@ -25,8 +26,21 @@ client.on("connect", function () {
 client.on("message", function (topic, payload, packet) {
   // Payload is Buffer
   var data = payload.toString();
-  data = JSON.parse(data);
-  console.log(
-    `Topic: ${topic}, Message: ${payload.toString()}, QoS: ${packet.qos}`
-  );
+  console.log(`Topic: ${topic}, Message: ${data}, QoS: ${packet.qos}`);
+  try {
+    data = JSON.parse(data);
+    if (data.why == "creds") {
+      console.log("Creds requested");
+      credSend();
+    }
+
+    if (data.why == "log") {
+      console.log("adding logs to table");
+      console.log(data);
+      logging(data);
+    }
+  } catch (e) {
+    console.log("Received non-JSON message");
+    console.log(data);
+  }
 });

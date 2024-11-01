@@ -25,14 +25,23 @@ export const get_data = async (req, res) => {
 };
 
 export const create_data = async (req, table, res) => {
-  console.log("in create_data");
-  const { error } = await supabase.from(table).insert(req);
+  const data = validate_data(req, req.schemaNumber);
+  const { error } = await supabase.from(table).insert(data.data);
   if (error) {
-    console.log("in error");
     console.log(error);
-    return res.status(400).json(error);
+    if (res) {
+      return res.status(400).json(error);
+    } else {
+      console.log("Error in create data: ", error);
+    }
+    return;
   }
-  return res.status(200).json("Data created successfully");
+  if (res) {
+    return res.status(200).json("Data created successfully");
+  } else {
+    console.log("Data created successfully");
+  }
+  return;
 };
 
 export const update_data = async (req, res) => {
@@ -61,7 +70,7 @@ export const remove_data = async (req, res) => {
   return res.status(200).json("Data removed successfully");
 };
 
-export const validate_data = (req, schemaNumber) => {
+export const validate_data = (req, schemaNumber = 3) => {
   const ajv = new Ajv();
   const schema = (opt) => {
     if (opt == 1) {
@@ -72,17 +81,16 @@ export const validate_data = (req, schemaNumber) => {
       return testSchema;
     }
   };
-  const validate = ajv.compile(schema(schemaNumber));
+  const validSchema = schema(schemaNumber);
+  const validate = ajv.compile(validSchema);
 
   const requestBody = req;
-  console.log("requestBody");
   const validData = Object.keys(requestBody)
-    .filter((key) => testSchema.properties[key]) // Keep only keys defined in schema
+    .filter((key) => validSchema.properties[key]) // Keep only keys defined in schema
     .reduce((obj, key) => {
       obj[key] = requestBody[key];
       return obj;
     }, {});
-
   // Validate the request body against the schema
   const isValid = validate(validData);
 
