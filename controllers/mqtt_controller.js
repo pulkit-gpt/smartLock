@@ -39,6 +39,12 @@ client.on("message", function (topic, payload, packet) {
       console.log(data);
       logging(data);
     }
+
+    if (data.why == "new") {
+      console.log("New user added");
+      console.log(data);
+      create_data(data, "auth_users");
+    }
   } catch (e) {
     console.log("Received non-JSON message");
     console.log(data);

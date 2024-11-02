@@ -24,6 +24,16 @@ export const get_data = async (req, res) => {
   return res.status(200).json(data);
 };
 
+export const get_all_data = async (req, res) => {
+  const { data, error } = await supabase.from("auth_users").select("*");
+  if (error) {
+    console.log("in error");
+    console.log(error);
+    return res.status(400).json(error);
+  }
+  return res.status(200).json(data);
+};
+
 export const create_data = async (req, table, res) => {
   const data = validate_data(req, req.schemaNumber);
   const { error } = await supabase.from(table).insert(data.data);

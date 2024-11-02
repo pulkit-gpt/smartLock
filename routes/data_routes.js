@@ -5,7 +5,7 @@ import {
   create_data,
   update_data,
   remove_data,
-  validate_data,
+  get_all_data,
 } from "../controllers/data_controller.js";
 
 router.post("/get_data", (req, res) => {
@@ -31,6 +31,11 @@ router.post("/remove_data", (req, res) => {
   console.log("remove_data");
   console.log(req.body);
   res = remove_data(req, res);
+});
+
+router.get("/get_all_data", (req, res) => {
+  console.log("get_all_data");
+  res = get_all_data(req, res);
 });
 
 export default router;
