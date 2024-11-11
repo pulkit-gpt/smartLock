@@ -14,6 +14,10 @@ router.post("/add_new_user", (req, res) => {
   add_user(req, res);
 });
 
+router.post("/record_new_user", (req, res) => {
+  console.log("add_user from esp");
+});
+
 router.post("/remove_user_auth", (req, res) => {
   console.log("remove_user");
   console.log(req.body);

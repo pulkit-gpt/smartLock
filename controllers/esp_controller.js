@@ -33,3 +33,5 @@ export function open_door() {
   console.log("Opening door");
   // should containt the WHY == OPEN in the publish message
 }
+
+export async function add_user(req, res) {}
