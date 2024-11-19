@@ -19,7 +19,7 @@ import {
   TableCell,
 } from "@mui/material";
 import { styled } from "@mui/system";
-
+import { API_URL } from "./App";
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
@@ -110,15 +110,45 @@ const SmartLockDashboard = () => {
   const handleCloseSADrawer = () => setShowSADrawer(false);
   const handleAddUser = () => {
     console.log("New user:", newUser);
+    try {
+      const response = fetch(`http://${API_URL}/app/add_new_user`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newUser),
+      });
+    } catch (error) {
+      console.error("Error adding user:", error.message);
+    }
     setNewUser({ name: "", pin: "" });
     handleCloseUserDialog();
   };
   const handleSASubmit = () => {
     console.log("SA Pin:", saPin);
+    try {
+      const response = fetch(`http://${API_URL}/app/timed_user`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ pin: saPin }),
+      });
+    } catch (error) {
+      console.error("Error setting SA Pin:", error.message);
+    }
     setSAPin("");
     handleCloseSAModal();
   };
-
+  const handleOpen = () => {
+    try {
+      const response = fetch(`http://${API_URL}/app/open_door`, {
+        method: "POST",
+      });
+    } catch (error) {
+      console.error("Error opening the lock:", error.message);
+    }
+  };
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="h-screen flex flex-col">
@@ -137,7 +167,11 @@ const SmartLockDashboard = () => {
           {/* Sidebar */}
           <div className="w-64 bg-white rounded-lg shadow-lg p-6">
             <div className="space-y-6">
-              <StyledButton variant="contained" className="w-full">
+              <StyledButton
+                variant="contained"
+                className="w-full"
+                onClick={handleOpen}
+              >
                 Open
               </StyledButton>
               <StyledButton
@@ -183,11 +217,13 @@ const SmartLockDashboard = () => {
                 <TableBody>
                   {accessLog.map((entry) => (
                     <TableRow
-                      key={entry.id}
+                      key={entry.srno}
                       className="hover:bg-gray-50 transition-colors"
                     >
                       <TableCell className="py-4">{entry.uuid}</TableCell>
-                      <TableCell className="py-4">{entry.accesed_by}</TableCell>
+                      <TableCell className="py-4">
+                        {entry.accessed_by}
+                      </TableCell>
                       <TableCell className="py-4">
                         {entry.accessed_at_time}
                       </TableCell>
