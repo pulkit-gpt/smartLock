@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   AppBar,
   Toolbar,
@@ -19,6 +19,12 @@ import {
   TableCell,
 } from "@mui/material";
 import { styled } from "@mui/system";
+
+import { createClient } from "@supabase/supabase-js";
+
+const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
+const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 const StyledButton = styled(Button)({
   backgroundColor: "#3c3e50",
@@ -63,44 +69,39 @@ const SmartLockDashboard = () => {
   const [newUser, setNewUser] = useState({ name: "", pin: "" });
   const [saPin, setSAPin] = useState("");
 
-  // Dummy data remains the same...
-  const users = [
-    {
-      id: 1,
-      name: "John Doe",
-      pin: "1234",
-      rfid: "123456789",
-      issuedOn: "2023-04-01",
-      hasAccess: true,
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      pin: "5678",
-      rfid: "987654321",
-      issuedOn: "2023-05-15",
-      hasAccess: false,
-    },
-  ];
+  // State for users and access log
+  const [users, setUsers] = useState([]);
+  const [accessLog, setAccessLog] = useState([]);
 
-  const accessLog = [
-    { id: 1, user: "John Doe", time: "2023-06-01 10:30:00", status: "Allowed" },
-    {
-      id: 2,
-      user: "Jane Smith",
-      time: "2023-06-02 15:45:00",
-      status: "Not Allowed",
-    },
-    { id: 3, user: "John Doe", time: "2023-06-03 14:20:00", status: "Allowed" },
-    {
-      id: 4,
-      user: "Jane Smith",
-      time: "2023-06-04 09:15:00",
-      status: "Not Allowed",
-    },
-  ];
+  useEffect(() => {
+    // Fetch users from the 'auth_users' table
+    const fetchUsers = async () => {
+      const { data, error } = await supabase.from("auth_users").select("*"); // Replace with your actual query
 
-  // Handler functions remain the same...
+      if (error) {
+        console.error("Error fetching users:", error.message);
+      } else {
+        setUsers(data);
+      }
+      console.log("Users:", data);
+    };
+
+    // Fetch access logs from the 'log' table
+    const fetchAccessLog = async () => {
+      const { data, error } = await supabase.from("access_logs").select("*"); // Replace with your actual query
+
+      if (error) {
+        console.error("Error fetching access log:", error.message);
+      } else {
+        setAccessLog(data);
+      }
+      console.log("Access Log:", data);
+    };
+
+    fetchUsers();
+    fetchAccessLog();
+  }, []); // Empty dependency array to fetch data once on mount
+
   const handleOpenUserDialog = () => setShowUserDialog(true);
   const handleCloseUserDialog = () => setShowUserDialog(false);
   const handleOpenSAModal = () => setShowSAModal(true);
@@ -185,18 +186,20 @@ const SmartLockDashboard = () => {
                       key={entry.id}
                       className="hover:bg-gray-50 transition-colors"
                     >
-                      <TableCell className="py-4">{entry.id}</TableCell>
-                      <TableCell className="py-4">{entry.user}</TableCell>
-                      <TableCell className="py-4">{entry.time}</TableCell>
+                      <TableCell className="py-4">{entry.uuid}</TableCell>
+                      <TableCell className="py-4">{entry.accesed_by}</TableCell>
+                      <TableCell className="py-4">
+                        {entry.accessed_at_time}
+                      </TableCell>
                       <TableCell className="py-4">
                         <span
                           className={`px-3 py-1 rounded-full text-sm ${
-                            entry.status === "Allowed"
+                            entry.access_given === true
                               ? "bg-green-100 text-green-800"
                               : "bg-red-100 text-red-800"
                           }`}
                         >
-                          {entry.status}
+                          {entry.access_given}
                         </span>
                       </TableCell>
                     </TableRow>
@@ -227,13 +230,34 @@ const SmartLockDashboard = () => {
             </TableHead>
             <TableBody>
               {users.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell>{user.id}</TableCell>
-                  <TableCell>{user.name}</TableCell>
-                  <TableCell>{user.pin}</TableCell>
-                  <TableCell>{user.rfid}</TableCell>
-                  <TableCell>{user.issuedOn}</TableCell>
-                  <TableCell>{user.hasAccess ? "Yes" : "No"}</TableCell>
+                <TableRow key={user.uuid}>
+                  <TableCell>{user.uuid}</TableCell>
+                  <TableCell>{user.issued_to}</TableCell>
+                  <TableCell>
+                    {
+                      <span
+                        className={`px-3 py-1 rounded-full text-sm ${
+                          user.type === "Pin"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
+                      ></span>
+                    }
+                  </TableCell>
+                  <TableCell>
+                    {" "}
+                    {
+                      <span
+                        className={`px-3 py-1 rounded-full text-sm ${
+                          user.type === "RFID"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
+                      ></span>
+                    }
+                  </TableCell>
+                  <TableCell>{user.issued_at}</TableCell>
+                  <TableCell>{user.access ? "Yes" : "No"}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
