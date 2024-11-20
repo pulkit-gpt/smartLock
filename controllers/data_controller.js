@@ -73,13 +73,21 @@ export const remove_data = async (req, res) => {
   const { error } = await supabase
     .from(req.body.table)
     .delete()
-    .eq("id", req.body.id);
+    .eq("uuid", req.body.uuid);
   if (error) {
     console.log("in error");
     console.log(error);
-    return res.status(400).json(error);
+    if (res) {
+      return res.status(400).json(error);
+    } else {
+      console.log("Error in remove data: ", error);
+    }
   }
-  return res.status(200).json("Data removed successfully");
+  if (res) {
+    return res.status(200).json("Data removed successfully");
+  } else {
+    console.log("Data removed successfully");
+  }
 };
 
 export const validate_data = (req, schemaNumber = 3) => {

@@ -37,29 +37,30 @@ export const remove_user_auth = async (req, res) => {
 };
 
 export const timed_user = async (req, res) => {
-  var pin = generateNumericPin();
+  var pin = req.body.pin;
   console.log("in timed_user");
-  red = {
-    body: {
-      uuid: pin,
-      table: "auth_users",
-      issued_to: req.body.issued_to,
-      type: "Pin",
-      access: "True",
-    },
+  const red = {
+    uuid: pin,
+    table: "auth_users",
+    issued_to: "timed_user",
+    issued_at: new Date().toISOString(),
+    type: "Pin",
+    access: true,
+    schemaNumber: 1,
   };
-  await create_data(red, res);
+  const table = "auth_users";
+  await create_data(red, table, res);
   //set time out of 10 minutes to update access to false
   setTimeout(() => {
-    red = {
+    const red = {
       body: {
         table: "auth_users",
         uuid: pin,
-        access: "False",
       },
     };
-    update_data(red, res);
-  }, 600000 /* 10 min */);
+    console.log("in timeout");
+    remove_data(red);
+  }, 600000); //10 minutes
   console.log("out timed_user");
 };
 

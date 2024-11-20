@@ -27,7 +27,7 @@ router.post("/remove_user_auth", (req, res) => {
 router.post("/timed_user", (req, res) => {
   console.log("timed_user");
   console.log(req.body);
-  //timed_user(req, res);
+  timed_user(req, res);
 });
 
 router.post("/open_door", (req, res) => {
