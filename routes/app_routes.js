@@ -33,7 +33,7 @@ router.post("/timed_user", (req, res) => {
 router.post("/open_door", (req, res) => {
   console.log("open_door");
   console.log(req.body);
-  //open_door(req, res);
+  open_door(req, res);
 });
 
 export default router;

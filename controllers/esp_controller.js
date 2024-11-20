@@ -23,8 +23,15 @@ export async function credSend() {
   // should containt the WHY == CREDS in the publish message
 }
 
-export function logging(data) {
+export function logging(req) {
   console.log("in Logging()");
+  const data = {
+    uuid: req.uuid,
+    accessed_at: new Date().toISOString(),
+    access_given: req.access_given,
+    schemaNumber: 2,
+  };
+  console.log(data);
   create_data(data, "access_logs");
   // should containt the WHY == LOG in the publish message
 }
@@ -32,6 +39,7 @@ export function logging(data) {
 export function open_door() {
   console.log("Opening door");
   // should containt the WHY == OPEN in the publish message
+  client.publish("smartLock/esp", JSON.stringify({ why: "open" }));
 }
 
 export async function add_user(req, res) {}

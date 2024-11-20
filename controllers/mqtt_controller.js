@@ -1,6 +1,8 @@
 import mqtt from "mqtt";
 import { credSend, logging, open_door } from "./esp_controller.js";
 
+export const topicPub = "smartLock/esp";
+
 const url = "mqtt://mqtt.eclipseprojects.io";
 // Initialize MQTT client
 const options = {

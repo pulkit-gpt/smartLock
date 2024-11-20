@@ -5,6 +5,10 @@ import {
   remove_data,
 } from "./data_controller.js";
 
+import { open_door as openDoor, credSend } from "./esp_controller.js";
+
+import { client, topicPub } from "./mqtt_controller.js";
+
 const generateNumericPin = (length = 6) => {
   const max = Math.pow(10, length) - 1;
   const min = Math.pow(10, length - 1);
@@ -25,6 +29,7 @@ export const add_user = async (req, res) => {
   const table = "auth_users";
   await create_data(data, table, res);
   console.log("out add_user");
+  credSend();
 };
 
 export const remove_user_auth = async (req, res) => {
@@ -50,6 +55,7 @@ export const timed_user = async (req, res) => {
   };
   const table = "auth_users";
   await create_data(red, table, res);
+  credSend();
   //set time out of 10 minutes to update access to false
   setTimeout(() => {
     const red = {
@@ -60,11 +66,15 @@ export const timed_user = async (req, res) => {
     };
     console.log("in timeout");
     remove_data(red);
-  }, 600000); //10 minutes
+    setTimeout(() => {
+      credSend();
+    }, 1000);
+  }, 60000); //10 minutes
   console.log("out timed_user");
 };
 
 export const open_door = async (req, res) => {
   console.log("in open_door");
   //write esp code
+  openDoor();
 };
