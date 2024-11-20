@@ -225,7 +225,7 @@ const SmartLockDashboard = () => {
                         {entry.accessed_by}
                       </TableCell>
                       <TableCell className="py-4">
-                        {entry.accessed_at_time}
+                        {entry.accessed_at}
                       </TableCell>
                       <TableCell className="py-4">
                         <span
