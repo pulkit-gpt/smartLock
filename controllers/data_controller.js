@@ -35,7 +35,9 @@ export const get_all_data = async (req, res) => {
 };
 
 export const create_data = async (req, table, res) => {
+  console.log("in create_data");
   const data = validate_data(req, req.schemaNumber);
+  console.log(data);
   const { error } = await supabase.from(table).insert(data.data);
   if (error) {
     console.log(error);
@@ -103,8 +105,8 @@ export const validate_data = (req, schemaNumber = 3) => {
     }, {});
   // Validate the request body against the schema
   const isValid = validate(validData);
-
   if (!isValid) {
+    console.log("error in avlida");
     return {
       isValid: false,
       errors: validate.errors,
@@ -114,6 +116,7 @@ export const validate_data = (req, schemaNumber = 3) => {
   // Filter the request body to only include the valid fields from the schema
 
   // Return the valid data
+  console.log("valid data");
   return {
     isValid: true,
     data: validData,

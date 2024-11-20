@@ -13,7 +13,7 @@ export const authSchema = {
     uuid: { type: "string" },
     issued_to: { type: "string" },
     issued_at: { type: "string" },
-    access: { type: "bool" },
+    access: { type: "boolean" },
     type: { type: "string" },
   },
   required: ["uuid", "issued_to", "issued_at", "access", "type"],

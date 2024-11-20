@@ -14,7 +14,16 @@ const generateNumericPin = (length = 6) => {
 
 export const add_user = async (req, res) => {
   console.log("in add_user");
-  await create_data(req, res);
+  const data = {
+    uuid: req.body.pin,
+    issued_to: req.body.name,
+    issued_at: new Date().toISOString(),
+    access: true,
+    type: "Pin",
+    schemaNumber: 1,
+  };
+  const table = "auth_users";
+  await create_data(data, table, res);
   console.log("out add_user");
 };
 
