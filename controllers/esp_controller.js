@@ -12,7 +12,9 @@ export async function credSend() {
   };
   const data = await get_all_data(req, res);
 
-  const creds = data.map((item) => item.uuid);
+  const creds = data
+    .filter((item) => item.uuid !== "0000")
+    .map((item) => item.uuid);
 
   const dataToSend = {
     why: "creds",
