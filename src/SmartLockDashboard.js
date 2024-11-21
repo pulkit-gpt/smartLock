@@ -76,8 +76,8 @@ const SmartLockDashboard = () => {
   useEffect(() => {
     // Fetch users from the 'auth_users' table
     const fetchUsers = async () => {
-      const { data, error } = await supabase.from("auth_users").select("*"); // Replace with your actual query
-
+      var { data, error } = await supabase.from("auth_users").select("*"); // Replace with your actual query
+      data = data.filter((user) => user.uuid !== "0000");
       if (error) {
         console.error("Error fetching users:", error.message);
       } else {
@@ -201,7 +201,7 @@ const SmartLockDashboard = () => {
                 <TableHead>
                   <TableRow>
                     <TableCell className="font-semibold bg-gray-50">
-                      Serial
+                      UUID
                     </TableCell>
                     <TableCell className="font-semibold bg-gray-50">
                       Accessed By
